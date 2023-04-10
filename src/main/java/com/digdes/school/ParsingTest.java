@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 public class ParsingTest {
     public List<Map<String, Object>> table = new ArrayList<>();
     public void parseRequest(String request) throws Exception {
-        List<String> requestWords = Arrays.stream(request.split("[ ,]"))
+        List<String> requestWords = Arrays.stream(request.split("[ ]"))
                 .filter(s -> !s.isEmpty())
                 .collect(Collectors.toList());
 

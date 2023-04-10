@@ -6,8 +6,6 @@ import com.digdes.school.ParsingTest;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class Select extends Command{
     public static List<Map<String, Object>> execute(List<String> request, ParsingTest driver) throws Exception {
@@ -32,19 +30,17 @@ public class Select extends Command{
         //params of the condition
         String columnName = "";
         String operator = "";
-        String param = "";//TODO: проверять параметр парама и кастить его
+        String param = "";
         String logicalOperator = "";
 
         while (!conditions.isEmpty()) {
-            //System.out.println(conditions);
             boolean severalConditions = conditions.size() > 3 && (conditions.size() - 3) % 4 == 0;
             columnName = conditions.remove(0);
             operator = conditions.remove(0);
             param = conditions.remove(0);
 
-            //System.out.println(logicalOperator + " " + columnName + " " + operator + " " + param );
 
-            if(logicalOperator.isEmpty() || logicalOperator.matches("(?i)or")) {
+            if(logicalOperator.isEmpty() || logicalOperator.matches("(?i)or")) { //TODO: добавить приоритет
                 selectTuples(table, resultTable, columnName, operator, param);
             } else if(logicalOperator.matches("(?i)and")) {
                 List<Map<String, Object>> localResultTable = new ArrayList<>();

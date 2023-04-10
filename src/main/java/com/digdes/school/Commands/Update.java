@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class Update extends Command{
+public class Update extends Command{//TODO: настроить работу с конкретными значениями, как в insert
     public static List<Map<String, Object>> execute(List<String> request, ParsingTest driver) throws Exception {
         if(request.get(1).matches("(?i)values")) {
             return getTuples(request.subList(2, request.size()), driver.table);
@@ -57,7 +57,7 @@ public class Update extends Command{
                 throw new Exception();
             }
 
-            if(!columnName.isEmpty() && !operator.isEmpty() && !param.isEmpty()) {  //TODO: для инсерта регекс оператора сделать просто "=" (мб передавать этот регекс парамтером в будущий метод)
+            if(!columnName.isEmpty() && !operator.isEmpty() && !param.isEmpty()) {
                 String finalColumnName = columnName;
                 String finalParam = param;
                 for (Map<String, Object> map : table) {

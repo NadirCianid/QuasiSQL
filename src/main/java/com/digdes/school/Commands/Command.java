@@ -11,12 +11,17 @@ public abstract class Command {
         //params of the condition
         String columnName = "";
         String operator = "";
-        String param = "";//TODO: проверять параметр парама и кастить его
+        String param = "";
         String logicalOperator = "";
 
         int i = 0;
         while (i < conditions.size()) {
             String condition = conditions.get(i);
+            if(condition.equals(",")) {
+                returnList.add(",");
+                i++;
+                condition = conditions.get(i);
+            }
             if(condition.matches(",.+,")) {
                 returnList.add(",");
                 condition = condition.substring(1,condition.length()-1);
@@ -29,10 +34,6 @@ public abstract class Command {
                 condition = condition.substring(0,condition.length()-1);
 
                 conditions.add(newPos, ",");
-            } else if(condition.equals(",")) {
-                returnList.add(",");
-                i++;
-                condition = conditions.get(i);
             }
 
             Pattern fullConditionPattern = Pattern.compile("(')(id|lastName|age|cost|active)(')(!=|=|>|<|>=|<=|like|ilike)([^=><]+)");
@@ -46,23 +47,38 @@ public abstract class Command {
 
 
             if (fullConditionMatcher.matches()) {
-                returnList.add(fullConditionMatcher.group(2));
-                returnList.add(fullConditionMatcher.group(4));
-                returnList.add(fullConditionMatcher.group(5));
+                columnName = fullConditionMatcher.group(2);
+                returnList.add(columnName);
+
+                operator = fullConditionMatcher.group(4);
+                returnList.add(operator);
+
+                param = fullConditionMatcher.group(5);
+                returnList.add(param);
             } else if (leftConditionMatcher.matches()) {
-                returnList.add(leftConditionMatcher.group(2));
-                returnList.add(leftConditionMatcher.group(4));
+                columnName = leftConditionMatcher.group(2);
+                returnList.add(columnName);
+
+                operator = leftConditionMatcher.group(4);
+                returnList.add(operator);
             } else if (rightConditionMatcher.matches()) {
-                returnList.add(rightConditionMatcher.group(1));
-                returnList.add(rightConditionMatcher.group(2));
+                operator = rightConditionMatcher.group(1);
+                returnList.add(operator);
+
+                param = rightConditionMatcher.group(2);
+                returnList.add(param);
             } else if (condition.matches("(')(id|lastName|age|cost|active)(')")) {
-                returnList.add(condition.substring(1, condition.length() - 1));
+                columnName = condition.substring(1, condition.length() - 1);
+                returnList.add(columnName);
             } else if (condition.matches("(!=|=|>|<|>=|<=|like|ilike)")) {
-                returnList.add(condition);
+                operator = condition;
+                returnList.add(operator);
             } else if (returnList.size() > 0 && returnList.get(returnList.size()-1).matches("(!=|=|>|<|>=|<=|like|ilike)")) {
-                returnList.add(condition);
+                param = condition;
+                returnList.add(param);
             } else if (condition.matches("(?i)(and|or)")) {
-                returnList.add(condition);
+                logicalOperator = condition;
+                returnList.add(logicalOperator);
             } else {
                 throw new Exception();
             }
