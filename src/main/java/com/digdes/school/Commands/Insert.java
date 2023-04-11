@@ -2,16 +2,13 @@ package com.digdes.school.Commands;
 
 import com.digdes.school.ParsingTest;
 
-
-import java.text.ParseException;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-public class Insert extends Command{
+
+public class Insert{
     public static List<Map<String, Object>> execute(List<String> request, ParsingTest driver) throws Exception {
         if(request.get(1).matches("(?i)values")) {
-            request = Command.convertToUnaryWords(request.subList(2, request.size()));
+            request = ParsingTest.convertToUnaryWords(request.subList(2, request.size()));
 
             Map<String, Object> newTuple = new HashMap<>();
             newTuple.put("id",null);
@@ -26,7 +23,8 @@ public class Insert extends Command{
         throw new Exception();
     }
 
-    private static List<Map<String, Object>> getTuples(List<String> conditions, List<Map<String, Object>> table, Map<String, Object> updatedTuple) throws Exception {
+    public static List<Map<String, Object>> getTuples(List<String> conditions, List<Map<String, Object>> table, Map<String, Object> updatedTuple) throws Exception {
+        Map<String, Object> tupleForInsert = new LinkedHashMap<>(updatedTuple);
         //params of the condition
         String columnName;
         String operator;
@@ -42,7 +40,7 @@ public class Insert extends Command{
             }
             param = conditions.remove(0);
 
-            insertNewValue(updatedTuple, columnName, param);
+            insertNewValue(tupleForInsert, columnName, param);
             if(conditions.size() == 0) {
                 break;
             }
@@ -55,7 +53,11 @@ public class Insert extends Command{
                 throw new Exception();
             }
         }
-        table.add(updatedTuple);
+        if(table.contains(updatedTuple)) {
+            table.set(table.indexOf(updatedTuple), tupleForInsert);
+        } else {
+            table.add(tupleForInsert);
+        }
         return table;
     }
 

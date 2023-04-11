@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class Select extends Command{
+public class Select {
     public static List<Map<String, Object>> execute(List<String> request, ParsingTest driver) throws Exception {
 
         if(request.size() == 1) {
@@ -15,7 +15,7 @@ public class Select extends Command{
         }
 
         if(request.get(1).matches("(?i)WHERE")) {
-            request = Command.convertToUnaryWords(request.subList(2, request.size()));
+            request = ParsingTest.convertToUnaryWords(request.subList(2, request.size()));
             if(request.size() < 3 || (request.size() - 3)%4 != 0) {
                 throw new Exception();
             }
