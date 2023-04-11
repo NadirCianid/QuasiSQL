@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 
 public class ParsingTest {
     public List<Map<String, Object>> table = new ArrayList<>();
-    public void parseRequest(String request) throws Exception {
+    public List<Map<String, Object>> parseRequest(String request) throws Exception {
         List<String> requestWords = Arrays.stream(request.split("[ ]"))
                 .filter(s -> !s.isEmpty())
                 .collect(Collectors.toList());
@@ -22,23 +22,20 @@ public class ParsingTest {
 
 
         if(firstWord.matches("(?i)INSERT")) {
-            System.out.println(Insert.execute(requestWords, this));
-            System.out.println("INSERT");
+            return Insert.execute(requestWords, this);
         }
 
         if(firstWord.matches("(?i)UPDATE")) {
-            System.out.println(Update.execute(requestWords, this));
-            System.out.println("UPDATE");
+            return Update.execute(requestWords, this);
         }
 
         if(firstWord.matches("(?i)DELETE")) {
-            Delete.execute(requestWords, this);
-            System.out.println("DELETE");
+            return Delete.execute(requestWords, this);
         }
 
         if(firstWord.matches("(?i)SELECT")) {
-            System.out.println(Select.execute(requestWords, this));
-            System.out.println("SELECT");
+            return Select.execute(requestWords, this);
         }
+        return null;
     }
 }

@@ -12,28 +12,26 @@ public class Insert extends Command{
     public static List<Map<String, Object>> execute(List<String> request, ParsingTest driver) throws Exception {
         if(request.get(1).matches("(?i)values")) {
             request = Command.convertToUnaryWords(request.subList(2, request.size()));
-            System.out.println(request);
-            return getTuples(request, driver.table);
+
+            Map<String, Object> newTuple = new HashMap<>();
+            newTuple.put("id",null);
+            newTuple.put("lastName",null);
+            newTuple.put("age",null);
+            newTuple.put("cost",null);
+            newTuple.put("active",null);
+
+            return getTuples(request, driver.table, newTuple);
         }
 
         throw new Exception();
     }
 
-    private static List<Map<String, Object>> getTuples(List<String> conditions, List<Map<String, Object>> table) throws Exception {
-        Map<String, Object> newTuple = new LinkedHashMap<>();
-        newTuple.put("id",null);
-        newTuple.put("lastName",null);
-        newTuple.put("age",null);
-        newTuple.put("cost",null);
-        newTuple.put("active",null);
-
+    private static List<Map<String, Object>> getTuples(List<String> conditions, List<Map<String, Object>> table, Map<String, Object> updatedTuple) throws Exception {
         //params of the condition
         String columnName;
         String operator;
         String param;
 
-        int partsCount = 0;
-        int i = 0;
         while (conditions.size()>0) {
             columnName = conditions.remove(0);
             operator = conditions.remove(0);
@@ -44,30 +42,24 @@ public class Insert extends Command{
             }
             param = conditions.remove(0);
 
-            insertNewValue(newTuple, columnName, param);
+            insertNewValue(updatedTuple, columnName, param);
             if(conditions.size() == 0) {
                 break;
             }
-           // partsCount+=3;
-          //  i+=partsCount;
 
             String condition = conditions.get(0);
             if(condition.equals(",")) {
-                //partsCount = 0;
                 conditions.remove(0);
-              //  i++;
             } else {
                 System.out.println("after value must be comma");
                 throw new Exception();
             }
         }
-
-        table.add(newTuple);
+        table.add(updatedTuple);
         return table;
     }
 
     private static void insertNewValue(Map<String, Object> tuple, String columnName, String  param) throws Exception {
-        //params of the condition
         switch (columnName) {
             case "id":
             case "age":
@@ -96,7 +88,7 @@ public class Insert extends Command{
                 break;
             case "active":
                 if(param.matches("false|true")) {
-                    tuple.put(columnName, param);
+                    tuple.put(columnName, Boolean.parseBoolean(param));
                 } else {
                     System.out.println("active can be only boolean value.");
                     throw new Exception();

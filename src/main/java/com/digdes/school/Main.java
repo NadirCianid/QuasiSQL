@@ -20,7 +20,7 @@ public class  Main {
         ParsingTest parser =  new ParsingTest();
         try {
           parser.parseRequest("   insert values 'active'=false, 'cost'=10.1");
-          parser.parseRequest("INSERT VALUES 'lastName' = 'Федоров',  'id'=, 'age'=40, 'active'=true");
+          parser.parseRequest("INSERT VALUES 'lastName' = 'Федоров',  'id'=5, 'age'=40, 'active'=true");
           parser.parseRequest("Update values 'lastName' = 'Чепушила'");
           parser.parseRequest("select where 'id' = 3 and 'active' =false");
           parser.parseRequest("SelecT");
