@@ -8,8 +8,9 @@ import java.util.Map;
 
 public class Delete {
     public static List<Map<String, Object>> execute(List<String> request, ParsingTest driver) throws Exception {
-        driver.table.removeAll(Select.execute(request, driver));
-        return new ArrayList<>();
+        List<Map<String, Object>> selectedTuples = Select.execute(request, driver);
+        driver.table.removeAll(selectedTuples);
+        return selectedTuples;
     }
 
 }

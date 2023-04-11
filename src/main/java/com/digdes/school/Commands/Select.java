@@ -10,13 +10,14 @@ import java.util.Map;
 public class Select {
     public static List<Map<String, Object>> execute(List<String> request, ParsingTest driver) throws Exception {
 
-        if(request.size() == 1) {
+        int requestSize = request.size();
+        if(requestSize == 1) {
             return driver.table;
         }
 
         if(request.get(1).matches("(?i)WHERE")) {
-            request = ParsingTest.convertToUnaryWords(request.subList(2, request.size()));
-            if(request.size() < 3 || (request.size() - 3)%4 != 0) {
+            request = ParsingTest.convertToUnaryWords(request.subList(2, requestSize));
+            if(requestSize < 3 || (requestSize - 3)%4 != 0) {
                 throw new Exception();
             }
             return getTuples(request, driver.table);
@@ -28,9 +29,9 @@ public class Select {
     private static List<Map<String, Object>> getTuples(List<String> conditions, List<Map<String, Object>> table) throws Exception {
         List<Map<String, Object>> resultTable = new ArrayList<>();
         //params of the condition
-        String columnName = "";
-        String operator = "";
-        String param = "";
+        String columnName;
+        String operator;
+        String param;
         String logicalOperator = "";
 
         while (!conditions.isEmpty()) {
@@ -39,6 +40,12 @@ public class Select {
             operator = conditions.remove(0);
             param = conditions.remove(0);
 
+            if(columnName.equals("lastName")) {
+                if(!param.matches("'[^=><]+'")) {
+                    throw new Exception();
+                }
+                param = param.substring(1, param.length()-1);
+            }
 
             if(logicalOperator.isEmpty() || logicalOperator.matches("(?i)or")) { //TODO: добавить приоритет
                 selectTuples(table, resultTable, columnName, operator, param);

@@ -3,6 +3,7 @@ package com.digdes.school.Commands;
 import com.digdes.school.ParsingTest;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 public class Insert{
@@ -58,7 +59,15 @@ public class Insert{
         } else {
             table.add(tupleForInsert);
         }
-        return table;
+
+        updatedTuple = table.subList(table.size()-1, table.size()).stream()
+                .flatMap(tuple -> tuple.entrySet().stream())
+                .filter(entry -> entry.getValue() != null)
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (prev, next) -> next, HashMap::new));
+        List<Map<String, Object>> result = new ArrayList<>();
+        result.add(updatedTuple);
+
+        return result;
     }
 
     private static void insertNewValue(Map<String, Object> tuple, String columnName, String  param) throws Exception {
