@@ -1,27 +1,31 @@
 package com.digdes.school;
 
-import java.util.Arrays;
+import java.sql.SQLOutput;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Map;
 
 public class  Main {
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
 
-        ParsingTest parser =  new ParsingTest();
+        JavaSchoolStarter starter =  new JavaSchoolStarter();
         try {
-          parser.parseRequest("   insert values 'active'=false, 'cost'=10.1");
-          parser.parseRequest("INSERT VALUES 'lastName' = 'Федоров',  'id'=5, 'age'=40, 'active'=true");
-          System.out.println(parser.table);
-          //  System.out.println(parser.parseRequest("Update values 'lastName' = 'Чепушила'  where 'id' = 5 and 'active' =true"));
-          System.out.println(parser.parseRequest("select where 'id'  = 5  or  'active' =false and 'age'=30 "));
-          parser.parseRequest("SelecT");
-          parser.parseRequest("delete where 'id' = 3 or 'age' = 40");
-          parser.parseRequest("select");
+            //Вставка строки в коллекцию
+            List<Map<String,Object>> result1 = starter.execute("INSERT VALUES 'lastName'='Федоров', 'id' = 3" );
+            //Изменение значения которое выше записывали
+            List<Map<String,Object>> result2 = starter.execute("UPDATE VALUES 'active'=false, 'cost'=10.1 where 'lastName'='Фед'оров'");
+            //Получение всех данных из коллекции (т.е. в данном примере вернется 1 запись)
+            List<Map<String,Object>> result3 = starter.execute("SELECT");
+            List<Map<String,Object>> result4 = starter.execute("delete WHERE 'id'=3 ");
+            List<Map<String,Object>> result5 = starter.execute("SELECT");
+
+            System.out.println(result1);
+            System.out.println(result2);
+            System.out.println(result3);
+            System.out.println(result4);
+            System.out.println(result5);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
-
-
 }

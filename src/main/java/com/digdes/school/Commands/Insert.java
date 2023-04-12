@@ -1,16 +1,16 @@
 package com.digdes.school.Commands;
 
-import com.digdes.school.ParsingTest;
+import com.digdes.school.JavaSchoolStarter;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 
 public class Insert{
-    public static List<Map<String, Object>> execute(List<String> request, ParsingTest driver) throws Exception {
+    public static List<Map<String, Object>> execute(List<String> request, JavaSchoolStarter driver) throws Exception {
         if(request.get(1).matches("(?i)values")) {
-            request = ParsingTest.convertToUnaryWords(request.subList(2, request.size()));
-
+            request = JavaSchoolStarter.convertToUnaryWords(request.subList(2, request.size()));
+            System.out.println(request);
             Map<String, Object> newTuple = new HashMap<>();
             newTuple.put("id",null);
             newTuple.put("lastName",null);
@@ -25,7 +25,7 @@ public class Insert{
     }
 
     public static List<Map<String, Object>> getTuples(List<String> conditions, List<Map<String, Object>> table, Map<String, Object> updatedTuple) throws Exception {
-        Map<String, Object> tupleForInsert = new LinkedHashMap<>(updatedTuple);
+        Map<String, Object> tupleForInsert = new HashMap<>(updatedTuple);
         //params of the condition
         String columnName;
         String operator;

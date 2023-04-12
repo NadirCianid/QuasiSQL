@@ -9,12 +9,12 @@ import static org.junit.Assert.assertEquals;
 public class QuasiSQLSimpleTest {
     @Test
     public void unaryQuery() throws Exception {
-        ParsingTest parser = new ParsingTest();
+        JavaSchoolStarter driver = new JavaSchoolStarter();
 
         List<Map<String, Object>> expectedResult = new ArrayList<>();
-        assertEquals(expectedResult, parser.parseRequest("Select"));
-        assertEquals(expectedResult, parser.parseRequest("delete"));
-        assertEquals(expectedResult, parser.parseRequest("update values 'lastName'='Denis'"));
+        assertEquals(expectedResult, driver.execute("Select"));
+        assertEquals(expectedResult, driver.execute("delete"));
+        assertEquals(expectedResult, driver.execute("update values 'lastName'='Denis'"));
 
     }
     @Test
@@ -27,20 +27,20 @@ public class QuasiSQLSimpleTest {
         addTuple(expectedResult1_1, 3, "lastName3", 18, 2.0, true);
         addTuple(expectedResult2, 2, "lastName2", 21, 1.0, false);
 
-        ParsingTest parser1 =  new ParsingTest();
-        ParsingTest parser2 =  new ParsingTest();
+        JavaSchoolStarter parser1 =  new JavaSchoolStarter();
+        JavaSchoolStarter parser2 =  new JavaSchoolStarter();
 
-        assertEquals(expectedResult1, parser1.parseRequest("insert values 'id'=1, 'lastName'='lastName', 'age'=18, 'cost' = 0.0, 'active'=true"));
-        assertEquals(expectedResult1_1, parser1.parseRequest("insert values 'id'=3, 'lastName'='lastName3', 'age'=18, 'cost' = 2.0, 'active'=true"));
+        assertEquals(expectedResult1, parser1.execute("insert values 'id'=1, 'lastName'='lastName', 'age'=18, 'cost' = 0.0, 'active'=true"));
+        assertEquals(expectedResult1_1, parser1.execute("insert values 'id'=3, 'lastName'='lastName3', 'age'=18, 'cost' = 2.0, 'active'=true"));
 
-        parser2.parseRequest("insert values 'id'=1, 'lastName'='lastName', 'age'=18, 'cost' = 0.0, 'active'=true");
-        assertEquals(expectedResult2, parser2.parseRequest("update values 'id'=2, 'lastName'='lastName2', 'age'=21, 'cost' = 1.0, 'active'=false"));
+        parser2.execute("insert values 'id'=1, 'lastName'='lastName', 'age'=18, 'cost' = 0.0, 'active'=true");
+        assertEquals(expectedResult2, parser2.execute("update values 'id'=2, 'lastName'='lastName2', 'age'=21, 'cost' = 1.0, 'active'=false"));
 
         addTuple(expectedResult1, 3, "lastName3", 18, 2.0, true);
-        assertEquals(expectedResult1, parser1.parseRequest("select where 'age'=18"));
+        assertEquals(expectedResult1, parser1.execute("select where 'age'=18"));
 
         System.out.println(parser1.table);
-        assertEquals(expectedResult1_1, parser1.parseRequest("delete where 'lastName'like'l.+3'"));
+        assertEquals(expectedResult1_1, parser1.execute("delete where 'lastName'like'l.+3'"));
     }
 
     private void addTuple(List<Map<String, Object>> table, long id, String lastName,long age, Double cost, boolean active) {

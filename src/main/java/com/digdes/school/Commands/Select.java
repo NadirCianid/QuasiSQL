@@ -1,22 +1,22 @@
 package com.digdes.school.Commands;
 
 import com.digdes.school.JavaSchoolStarter;
-import com.digdes.school.ParsingTest;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class Select {
-    public static List<Map<String, Object>> execute(List<String> request, ParsingTest driver) throws Exception {
+    public static List<Map<String, Object>> execute(List<String> request, JavaSchoolStarter driver) throws Exception {
 
         int requestSize = request.size();
         if(requestSize == 1) {
-            return driver.table;
+            return new ArrayList<>(driver.table);
         }
 
         if(request.get(1).matches("(?i)WHERE")) {
-            request = ParsingTest.convertToUnaryWords(request.subList(2, requestSize));
+            request = JavaSchoolStarter.convertToUnaryWords(request.subList(2, requestSize));
             return getTuples(request, driver.table);
         }
 

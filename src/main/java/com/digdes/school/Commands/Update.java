@@ -1,6 +1,6 @@
 package com.digdes.school.Commands;
 
-import com.digdes.school.ParsingTest;
+import com.digdes.school.JavaSchoolStarter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,7 +8,7 @@ import java.util.Map;
 
 
 public class Update {
-    public static List<Map<String, Object>> execute(List<String> request, ParsingTest driver) throws Exception {
+    public static List<Map<String, Object>> execute(List<String> request, JavaSchoolStarter driver) throws Exception {
         int requestSize = request.size();
         if(requestSize < 3) {
             System.out.println("query is too short");
@@ -17,21 +17,20 @@ public class Update {
 
         int whereIndex = requestSize;
         for (String word : request) {
-            if(word.matches("(?i)where")) {
+            if (word.matches("(?i)where")) {
                 whereIndex = request.indexOf(word);
             }
         }
 
         if(request.get(1).matches("(?i)values")) {
-            List<String> values = ParsingTest.convertToUnaryWords(request.subList(2, whereIndex));
+            List<String> values = JavaSchoolStarter.convertToUnaryWords(request.subList(2, whereIndex));
             List<Map<String, Object>> tableForUpdate;
             List<Map<String, Object>> returnTable = new ArrayList<>();
 
             if(whereIndex == requestSize) {
                 tableForUpdate = driver.table;
             } else {
-                System.out.println(request.subList(whereIndex - 1, requestSize));
-                tableForUpdate = Select.execute(request.subList(whereIndex - 1 , requestSize), driver);
+                tableForUpdate = Select.execute(request.subList(whereIndex , request.size()), driver);
             }
 
             for (Map<String, Object> tuple: tableForUpdate) {
