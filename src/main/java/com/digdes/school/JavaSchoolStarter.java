@@ -71,8 +71,14 @@ public class JavaSchoolStarter {
                 condition = condition.substring(0, condition.length() - 1);
 
                 conditions.add(newPos, ",");
-            }
+            } else if (condition.matches(".+,.+")) {
+                String newCondition =  condition.substring(condition.indexOf(',')+1, condition.length());
+                int newPos = conditions.indexOf(condition) + 1;
+                condition = condition.substring(0, condition.indexOf(','));
 
+                conditions.add(newPos, ",");
+                conditions.add(newPos+1,newCondition);
+            }
             Pattern fullConditionPattern = Pattern.compile("(')(id|lastName|age|cost|active)(')(!=|=|>|<|>=|<=|like|ilike)([^=><]+)");
             Matcher fullConditionMatcher = fullConditionPattern.matcher(condition);
 

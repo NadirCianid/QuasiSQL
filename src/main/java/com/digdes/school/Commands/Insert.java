@@ -10,7 +10,6 @@ public class Insert{
     public static List<Map<String, Object>> execute(List<String> request, JavaSchoolStarter driver) throws Exception {
         if(request.get(1).matches("(?i)values")) {
             request = JavaSchoolStarter.convertToUnaryWords(request.subList(2, request.size()));
-            System.out.println(request);
             Map<String, Object> newTuple = new HashMap<>();
             newTuple.put("id",null);
             newTuple.put("lastName",null);
