@@ -17,9 +17,6 @@ public class Select {
 
         if(request.get(1).matches("(?i)WHERE")) {
             request = ParsingTest.convertToUnaryWords(request.subList(2, requestSize));
-            if(requestSize < 3 || (requestSize - 3)%4 != 0) {
-                throw new Exception();
-            }
             return getTuples(request, driver.table);
         }
 
@@ -28,75 +25,99 @@ public class Select {
 
     private static List<Map<String, Object>> getTuples(List<String> conditions, List<Map<String, Object>> table) throws Exception {
         List<Map<String, Object>> resultTable = new ArrayList<>();
+        List<String> whereResult;
         //params of the condition
         String columnName;
         String operator;
         String param;
-        String logicalOperator = "";
 
-        while (!conditions.isEmpty()) {
-            boolean severalConditions = conditions.size() > 3 && (conditions.size() - 3) % 4 == 0;
-            columnName = conditions.remove(0);
-            operator = conditions.remove(0);
-            param = conditions.remove(0);
+        for (Map<String, Object> tuple: table) {
+            whereResult = new ArrayList<>();
+            int i = 0;
+            boolean lo = true; // флаг, показывающий был ли логический оператор на предыдущем шаге
+            while (i < conditions.size()) {
+                if (!conditions.get(i).matches("(?i)and|or") && lo && i + 2 <= conditions.size() - 1) {
+                    columnName = conditions.get(i);
+                    operator = conditions.get(i + 1);
+                    param = conditions.get(i + 2);
 
-            if(columnName.equals("lastName")) {
-                if(!param.matches("'[^=><]+'")) {
+                    if (columnName.equals("lastName")) {
+                        if (!param.matches("'[^=><]+'")) {
+                            throw new Exception();
+                        }
+                        param = param.substring(1, param.length() - 1);
+                    }
+                    whereResult.add(String.valueOf(validateTuple(tuple, columnName, operator, param)));
+                    i += 3;
+                    lo = false;
+                } else if(conditions.get(i).matches("(?i)and|or") && i < conditions.size()-3 && !lo){
+                    lo = true;
+                    whereResult.add(conditions.get(i).toLowerCase());
+                    i++;
+                } else {
                     throw new Exception();
                 }
-                param = param.substring(1, param.length()-1);
             }
+            processLogicalOperators(whereResult, "and");
+            processLogicalOperators(whereResult, "or");
 
-            if(logicalOperator.isEmpty() || logicalOperator.matches("(?i)or")) { //TODO: добавить приоритет
-                selectTuples(table, resultTable, columnName, operator, param);
-            } else if(logicalOperator.matches("(?i)and")) {
-                List<Map<String, Object>> localResultTable = new ArrayList<>();
-                selectTuples(resultTable, localResultTable,  columnName, operator, param);
-                resultTable = localResultTable;
-            }
-            if(severalConditions) {
-                logicalOperator = conditions.remove(0);
-            } else {
-                logicalOperator = "";
+            if(Boolean.parseBoolean(whereResult.remove(0))) {
+                resultTable.add(tuple);
             }
         }
 
         return resultTable;
     }
 
-    private static void selectTuples(List<Map<String, Object>> table, List<Map<String, Object>> resultTable, String columnName, String operator, String param) throws Exception {
-        for (Map<String, Object> map: table) {
-            if(map.isEmpty()) {
-                return;
+    private static void processLogicalOperators(List<String> whereResult, String logicalOperator) {
+        boolean logicalOperatorResult = false;
+        for (int j = 0; j < whereResult.size(); j++) {
+            if(whereResult.get(j).equals(logicalOperator)) {
+                if(logicalOperator.equals("and")) {
+                    logicalOperatorResult = Boolean.parseBoolean(whereResult.get(j - 1)) && Boolean.parseBoolean(whereResult.get(j + 1));
+                    whereResult.set(j + 1, String.valueOf(logicalOperatorResult));
+                    whereResult.remove(j - 1);
+                    whereResult.remove(j);
+                }
+                if(logicalOperator.equals("or")) {
+                    logicalOperatorResult = Boolean.parseBoolean(whereResult.get(j - 1)) || Boolean.parseBoolean(whereResult.get(j + 1));
+                    whereResult.set(j + 1, String.valueOf(logicalOperatorResult));
+                    whereResult.remove(0);
+                    whereResult.remove(0);
+                }
+            }
+        }
+    }
+
+    private static boolean validateTuple(Map<String, Object> tuple,String columnName, String operator, String param) throws Exception {
+            if(tuple.isEmpty() || tuple.get(columnName) == null) {
+                return false;
             }
 
-            if(map.get(columnName) == null || resultTable.contains(map)) {
-               continue;
-            }
-            String attribute = map.get(columnName).toString();
+            String attribute = tuple.get(columnName).toString();
 
             switch (operator) {
                 case "=":
                     if(attribute.equals(param)) {
-                        resultTable.add(map);
+                        return true;
                     }
                     break;
 
                 case "!=":
                     if(!attribute.equals(param)) {
-                        resultTable.add(map);
+                        return true;
                     }
                     break;
 
                 case ">":
                     try{
                         if(Long.parseLong(attribute) > Long.parseLong(param)) {
-                            resultTable.add(map);
+                            return true;
                         }
                     } catch (NumberFormatException e) {
                         try {
                             if(Double.parseDouble(attribute) > Double.parseDouble(param)) {
-                                resultTable.add(map);
+                                return true;
                             }
                         } catch (NumberFormatException ex) {
                             throw new Exception();
@@ -107,12 +128,12 @@ public class Select {
                 case ">=":
                     try{
                         if(Long.parseLong(attribute) >= Long.parseLong(param)) {
-                            resultTable.add(map);
+                            return true;
                         }
                     } catch (NumberFormatException e) {
                         try {
                             if(Double.parseDouble(attribute) >= Double.parseDouble(param)) {
-                                resultTable.add(map);
+                                return true;
                             }
                         } catch (NumberFormatException ex) {
                             throw new Exception();
@@ -123,12 +144,12 @@ public class Select {
                 case "<":
                     try{
                         if(Long.parseLong(attribute) < Long.parseLong(param)) {
-                            resultTable.add(map);
+                            return true;
                         }
                     } catch (NumberFormatException e) {
                         try {
                             if (Double.parseDouble(attribute) < Double.parseDouble(param)) {
-                                resultTable.add(map);
+                                return true;
                             }
                         } catch (NumberFormatException ex) {
                             throw new Exception();
@@ -139,12 +160,12 @@ public class Select {
                 case "<=":
                     try{
                         if(Long.parseLong(attribute) <= Long.parseLong(param)) {
-                            resultTable.add(map);
+                            return true;
                         }
                     } catch (NumberFormatException e) {
                         try {
                             if(Double.parseDouble(attribute) <= Double.parseDouble(param)) {
-                                resultTable.add(map);
+                                return true;
                             }
                         } catch (NumberFormatException ex) {
                             throw new Exception();
@@ -154,19 +175,19 @@ public class Select {
 
                 case "like":
                     if(attribute.matches(param)) {
-                        resultTable.add(map);
+                        return true;
                     }
                     break;
 
                 case "ilike":
                     if(attribute.matches("(?i)" + param)) {
-                        resultTable.add(map);
+                        return true;
                     }
                     break;
 
                 default:
                     throw new Exception();
             }
-        }
+        return false;
     }
 }
