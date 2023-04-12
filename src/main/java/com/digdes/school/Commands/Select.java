@@ -76,9 +76,9 @@ public class Select {
                     logicalOperatorResult = Boolean.parseBoolean(whereResult.get(j - 1)) && Boolean.parseBoolean(whereResult.get(j + 1));
                     whereResult.set(j + 1, String.valueOf(logicalOperatorResult));
                     whereResult.remove(j - 1);
-                    whereResult.remove(j);
+                    whereResult.remove(j - 1);
                 }
-                if(logicalOperator.equals("or")) {
+                if(logicalOperator.equals("or") && whereResult.size() > 1) {
                     logicalOperatorResult = Boolean.parseBoolean(whereResult.get(j - 1)) || Boolean.parseBoolean(whereResult.get(j + 1));
                     whereResult.set(j + 1, String.valueOf(logicalOperatorResult));
                     whereResult.remove(0);

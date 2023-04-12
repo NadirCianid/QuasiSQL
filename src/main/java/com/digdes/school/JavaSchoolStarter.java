@@ -26,6 +26,9 @@ public class JavaSchoolStarter {
 
 
         if (firstWord.matches("(?i)INSERT")) {
+            if(requestWords.size() <= 2) {
+                throw  new Exception();
+            }
             return Insert.execute(requestWords, this);
         }
 
@@ -91,8 +94,34 @@ public class JavaSchoolStarter {
             Pattern rightConditionPattern = Pattern.compile("(!=|>=|<=|=|>|<|like|ilike)([^=><]+)");
             Matcher rightConditionMatcher = rightConditionPattern.matcher(condition);
 
+            Pattern fullLOConditionPattern = Pattern.compile("(.+)((?i)and|or)(.+)");
+            Matcher fullLOConditionMatcher = fullLOConditionPattern.matcher(condition);
 
-            if (fullConditionMatcher.matches()) {
+            Pattern rightLOConditionPattern = Pattern.compile("(.+)((?i)and|or)");
+            Matcher rightLOConditionMatcher = rightLOConditionPattern.matcher(condition);
+
+            Pattern leftLOConditionPattern = Pattern.compile("((?i)and|or)(.+)");
+            Matcher leftLOConditionMatcher = leftLOConditionPattern.matcher(condition);
+
+             if(leftLOConditionMatcher.matches()) {
+                conditions.set(i, leftLOConditionMatcher.group(2));
+                logicalOperator = leftLOConditionMatcher.group(1);
+
+                returnList.add(logicalOperator);
+                 i--;
+            } else if(fullLOConditionMatcher.matches()) {
+                 conditions.set(i, fullLOConditionMatcher.group(1));
+                 logicalOperator = fullLOConditionMatcher.group(2);
+                 conditions.add(i+1, logicalOperator);
+                 conditions.add(i+2, fullLOConditionMatcher.group(3));
+                 i--;
+            } else if(rightLOConditionMatcher.matches()) {
+                conditions.set(i, rightLOConditionMatcher.group(1));
+                logicalOperator = rightLOConditionMatcher.group(2);
+
+                conditions.add(i+1, logicalOperator);
+                 i--;
+            } else if (fullConditionMatcher.matches()) {
                 columnName = fullConditionMatcher.group(2);
                 returnList.add(columnName);
 
@@ -126,9 +155,9 @@ public class JavaSchoolStarter {
                 logicalOperator = condition;
                 returnList.add(logicalOperator);
             } else {
+
                 throw new Exception();
             }
-
             i++;
         }
         return returnList;

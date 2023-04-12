@@ -7,12 +7,12 @@ import java.util.stream.Collectors;
 
 
 public class Insert{
-
     private static boolean idValuePresented = false;
     private static boolean lastNameValuePresented = false;
     private static boolean ageValuePresented = false;
     private static boolean costValuePresented = false;
     private static boolean activeValuePresented = false;
+
     public static List<Map<String, Object>> execute(List<String> request, JavaSchoolStarter driver) throws Exception {
         if(request.get(1).matches("(?i)values")) {
             request = JavaSchoolStarter.convertToUnaryWords(request.subList(2, request.size()));

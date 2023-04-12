@@ -19,6 +19,7 @@ public class Update {
         for (String word : request) {
             if (word.matches("(?i)where")) {
                 whereIndex = request.indexOf(word);
+                break;
             }
         }
 
