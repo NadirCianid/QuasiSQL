@@ -1,6 +1,4 @@
-package com.digdes.school.Commands;
-
-import com.digdes.school.JavaSchoolStarter;
+package com.digdes.school;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -25,7 +23,7 @@ public class Insert{
 
             return getTuples(request, driver.table, newTuple);
         }
-
+        System.out.println("VALUES expected");
         throw new Exception();
     }
 
@@ -92,6 +90,7 @@ public class Insert{
             case "id":
             case "age":
                 if(idValuePresented || ageValuePresented) {
+                    System.out.println("repeating value");
                     throw new Exception();
                 }
 
@@ -110,6 +109,7 @@ public class Insert{
                 break;
             case "lastName":
                 if(lastNameValuePresented) {
+                    System.out.println("repeating value");
                     throw new Exception();
                 }
                 lastNameValuePresented = true;
@@ -122,6 +122,7 @@ public class Insert{
                 break;
             case "cost":
                 if(costValuePresented) {
+                    System.out.println("repeating value");
                     throw new Exception();
                 }
                 costValuePresented = true;
@@ -134,6 +135,7 @@ public class Insert{
                 break;
             case "active":
                 if(activeValuePresented) {
+                    System.out.println("repeating value");
                     throw new Exception();
                 }
                 activeValuePresented = true;
@@ -145,6 +147,7 @@ public class Insert{
                 }
                 break;
             default:
+                System.out.println("unexpected symbols");
                 throw new Exception();
         }
     }

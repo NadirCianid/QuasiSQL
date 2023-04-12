@@ -1,6 +1,4 @@
-package com.digdes.school.Commands;
-
-import com.digdes.school.JavaSchoolStarter;
+package com.digdes.school;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,6 +40,7 @@ public class Select {
 
                     if (columnName.equals("lastName")) {
                         if (!param.matches("'[^=><]+'")) {
+                            System.out.println("incorrect condition for column 'lastName' (expected =|like|ilike)");
                             throw new Exception();
                         }
                         param = param.substring(1, param.length() - 1);
@@ -54,6 +53,7 @@ public class Select {
                     whereResult.add(conditions.get(i).toLowerCase());
                     i++;
                 } else {
+                    System.out.println("logical operator format error");
                     throw new Exception();
                 }
             }
@@ -119,6 +119,7 @@ public class Select {
                                 return true;
                             }
                         } catch (NumberFormatException ex) {
+                            System.out.println("number format error");
                             throw new Exception();
                         }
                     }
@@ -135,6 +136,7 @@ public class Select {
                                 return true;
                             }
                         } catch (NumberFormatException ex) {
+                            System.out.println("number format error");
                             throw new Exception();
                         }
                     }
@@ -151,6 +153,7 @@ public class Select {
                                 return true;
                             }
                         } catch (NumberFormatException ex) {
+                            System.out.println("number format error");
                             throw new Exception();
                         }
                     }
@@ -167,6 +170,7 @@ public class Select {
                                 return true;
                             }
                         } catch (NumberFormatException ex) {
+                            System.out.println("number format error");
                             throw new Exception();
                         }
                     }
@@ -185,6 +189,7 @@ public class Select {
                     break;
 
                 default:
+                    System.out.println("unexpected symbols");
                     throw new Exception();
             }
         return false;

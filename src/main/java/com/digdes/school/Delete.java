@@ -1,6 +1,4 @@
-package com.digdes.school.Commands;
-
-import com.digdes.school.JavaSchoolStarter;
+package com.digdes.school;
 
 import java.util.List;
 import java.util.Map;

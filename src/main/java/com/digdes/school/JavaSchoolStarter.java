@@ -1,7 +1,5 @@
 package com.digdes.school;
 
-import com.digdes.school.Commands.*;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -155,12 +153,11 @@ public class JavaSchoolStarter {
                 logicalOperator = condition;
                 returnList.add(logicalOperator);
             } else {
-
+                 System.out.println("statement format error or incorrect column name");
                 throw new Exception();
             }
             i++;
         }
         return returnList;
     }
-
 }

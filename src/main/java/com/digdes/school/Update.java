@@ -1,6 +1,4 @@
-package com.digdes.school.Commands;
-
-import com.digdes.school.JavaSchoolStarter;
+package com.digdes.school;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,6 +38,7 @@ public class Update {
             return returnTable;
         }
 
+        System.out.println("values expected");
         throw new Exception();
     }
 }
