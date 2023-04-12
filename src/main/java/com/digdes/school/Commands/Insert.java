@@ -72,21 +72,35 @@ public class Insert{
         List<Map<String, Object>> result = new ArrayList<>();
         result.add(updatedTuple);
 
+
+        idValuePresented = false;
+        lastNameValuePresented = false;
+        ageValuePresented = false;
+        costValuePresented = false;
+        activeValuePresented = false;
+
         return result;
     }
 
     private static void insertNewValue(Map<String, Object> tuple, String columnName, String  param) throws Exception {
+        if(param.equals("null")) {
+            tuple.put(columnName, null);
+            return;
+        }
+
         switch (columnName) {
             case "id":
             case "age":
                 if(idValuePresented || ageValuePresented) {
                     throw new Exception();
                 }
+
                 if(columnName.equals("id")) {
                     idValuePresented = true;
                 } else {
                     ageValuePresented = true;
                 }
+
                 try{
                     tuple.put(columnName, Long.parseLong(param));
                 } catch (NumberFormatException longParseException) {
