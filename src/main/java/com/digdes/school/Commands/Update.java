@@ -36,7 +36,7 @@ public class Update {
             for (Map<String, Object> tuple: tableForUpdate) {
                 returnTable.add(Insert.getTuples(values, driver.table, tuple).get(0));
             }
-            return returnTable; //TODO:проверить
+            return returnTable;
         }
 
         throw new Exception();

@@ -7,6 +7,12 @@ import java.util.stream.Collectors;
 
 
 public class Insert{
+
+    private static boolean idValuePresented = false;
+    private static boolean lastNameValuePresented = false;
+    private static boolean ageValuePresented = false;
+    private static boolean costValuePresented = false;
+    private static boolean activeValuePresented = false;
     public static List<Map<String, Object>> execute(List<String> request, JavaSchoolStarter driver) throws Exception {
         if(request.get(1).matches("(?i)values")) {
             request = JavaSchoolStarter.convertToUnaryWords(request.subList(2, request.size()));
@@ -34,7 +40,7 @@ public class Insert{
             columnName = conditions.remove(0);
             operator = conditions.remove(0);
             if(!operator.equals("=")) {
-                System.out.println(operator);
+                System.out.println("found operator" + operator);
                 System.out.println("value format error (operator must be '=')");
                 throw new Exception();
             }
@@ -73,6 +79,14 @@ public class Insert{
         switch (columnName) {
             case "id":
             case "age":
+                if(idValuePresented || ageValuePresented) {
+                    throw new Exception();
+                }
+                if(columnName.equals("id")) {
+                    idValuePresented = true;
+                } else {
+                    ageValuePresented = true;
+                }
                 try{
                     tuple.put(columnName, Long.parseLong(param));
                 } catch (NumberFormatException longParseException) {
@@ -81,6 +95,10 @@ public class Insert{
                 }
                 break;
             case "lastName":
+                if(lastNameValuePresented) {
+                    throw new Exception();
+                }
+                lastNameValuePresented = true;
                 if(param.matches("'.+'")) {
                     tuple.put(columnName, param.substring(1, param.length()-1));
                 } else {
@@ -89,6 +107,10 @@ public class Insert{
                 }
                 break;
             case "cost":
+                if(costValuePresented) {
+                    throw new Exception();
+                }
+                costValuePresented = true;
                 try{
                     tuple.put(columnName, Double.parseDouble(param));
                 } catch (NumberFormatException longParseException) {
@@ -97,6 +119,10 @@ public class Insert{
                 }
                 break;
             case "active":
+                if(activeValuePresented) {
+                    throw new Exception();
+                }
+                activeValuePresented = true;
                 if(param.matches("false|true")) {
                     tuple.put(columnName, Boolean.parseBoolean(param));
                 } else {

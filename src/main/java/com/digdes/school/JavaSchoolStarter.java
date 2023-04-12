@@ -46,33 +46,36 @@ public class JavaSchoolStarter {
     public static List<String> convertToUnaryWords(List<String> conditions) throws Exception {
         List<String> returnList = new ArrayList<>();
         //params of the condition
-        String columnName = "";
-        String operator = "";
-        String param = "";
-        String logicalOperator = "";
+        String columnName;
+        String operator;
+        String param;
+        String logicalOperator;
+
 
         int i = 0;
         while (i < conditions.size()) {
+            boolean comaPresented = false;// была ли запятая на данном шаге
             String condition = conditions.get(i);
             if (condition.equals(",")) {
                 returnList.add(",");
                 i++;
                 condition = conditions.get(i);
+                comaPresented = true;
             }
             if (condition.matches(",.+,")) {
                 returnList.add(",");
                 condition = condition.substring(1, condition.length() - 1);
                 conditions.add(conditions.indexOf(condition), ",");
-            } else if (condition.matches(",.+")) {
+            } else if (condition.matches(",.+") && !comaPresented) {
                 returnList.add(",");
                 condition = condition.substring(1);
             } else if (condition.matches(".+,")) {
-                int newPos = conditions.indexOf(condition) + 1;
+                int newPos = i + 1;
                 condition = condition.substring(0, condition.length() - 1);
 
                 conditions.add(newPos, ",");
             } else if (condition.matches(".+,.+")) {
-                String newCondition =  condition.substring(condition.indexOf(',')+1, condition.length());
+                String newCondition =  condition.substring(condition.indexOf(',')+1);
                 int newPos = conditions.indexOf(condition) + 1;
                 condition = condition.substring(0, condition.indexOf(','));
 

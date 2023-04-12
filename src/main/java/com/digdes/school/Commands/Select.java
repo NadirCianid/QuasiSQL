@@ -3,7 +3,6 @@ package com.digdes.school.Commands;
 import com.digdes.school.JavaSchoolStarter;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -70,7 +69,7 @@ public class Select {
     }
 
     private static void processLogicalOperators(List<String> whereResult, String logicalOperator) {
-        boolean logicalOperatorResult = false;
+        boolean logicalOperatorResult;
         for (int j = 0; j < whereResult.size(); j++) {
             if(whereResult.get(j).equals(logicalOperator)) {
                 if(logicalOperator.equals("and")) {
@@ -180,7 +179,7 @@ public class Select {
                     break;
 
                 case "ilike":
-                    if(attribute.matches("(?i)" + param)) {
+                    if(attribute.toLowerCase().matches(param.toLowerCase())) {
                         return true;
                     }
                     break;
