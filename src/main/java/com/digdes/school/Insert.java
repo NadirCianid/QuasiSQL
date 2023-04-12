@@ -89,7 +89,7 @@ public class Insert{
         switch (columnName) {
             case "id":
             case "age":
-                if(idValuePresented || ageValuePresented) {
+                if(columnName.equals("id") && idValuePresented || columnName.equals("age") && ageValuePresented) {
                     System.out.println("repeating value");
                     throw new Exception();
                 }
